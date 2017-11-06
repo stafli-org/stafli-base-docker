@@ -41,7 +41,7 @@ services:
       - "architecture=$BUILD_ARCH"
       - "org.label-schema.version=$BUILD_VERSION"
       - "org.label-schema.build-date=$BUILD_DATE"
-    image: "solict/high-performance-php-stack:centos6_memcached14"
+    image: "stafli/stafli.memcached.cache:centos6_memcached14"
     build:
       context: "./dockerfiles"
       dockerfile: "memcached14.dockerfile"
