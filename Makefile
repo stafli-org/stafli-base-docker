@@ -1,7 +1,8 @@
 #
-#    Makefile
-#    Copyright (C) 2016 SOL-ICT
-#    This file is part of the Docker High Performance PHP Stack.
+#    Stafli Memcached Cache System (makefile)
+#    Copyright (C) 2016-2017 Stafli
+#    Luís Pedro Algarvio
+#    This file is part of the Stafli Application Stack.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,7 +27,7 @@ all: help
 
 help:
 	@echo "\
-Docker High Performance PHP Stack\n\
+Stafli Memcached Cache System\n\
 \n\
 Syntax:\n\
 make <command> DISTRO=<distribution>\n\
@@ -168,7 +169,7 @@ purge:
 		@echo Purging containers, networks, volumes and images for $(DISTRO)...
 		bash -c "(cd $(DISTRO); set -o allexport; source .env; set +o allexport; docker-compose down)";
 		docker volume rm $(DISTRO)_memcached14_data;
-		docker rmi solict/high-performance-php-stack:$(DISTRO)_memcached14;
+		docker rmi stafli/stafli.memcached.cache:$(DISTRO)_memcached14;
         endif
 
 
@@ -178,19 +179,19 @@ img-ls:
 	@echo
         ifeq ($(DISTRO), all)
 		@echo Listing images for debian8...
-		docker images | grep -E "solict/high-performance-php-stack.*debian8" | sort -n;
+		docker images | grep -E "stafli/stafli.memcached.cache.*debian8" | sort -n;
 		@echo
 		@echo Listing images for debian7...
-		docker images | grep -E "solict/high-performance-php-stack.*debian7" | sort -n;
+		docker images | grep -E "stafli/stafli.memcached.cache.*debian7" | sort -n;
 		@echo
 		@echo Listing images for centos7...
-		docker images | grep -E "solict/high-performance-php-stack.*centos7" | sort -n;
+		docker images | grep -E "stafli/stafli.memcached.cache.*centos7" | sort -n;
 		@echo
 		@echo Listing images for centos6...
-		docker images | grep -E "solict/high-performance-php-stack.*centos6" | sort -n;
+		docker images | grep -E "stafli/stafli.memcached.cache.*centos6" | sort -n;
         else
 		@echo Listing images for $(DISTRO)...
-		docker images | grep -E "solict/high-performance-php-stack.*$(DISTRO)" | sort -n;
+		docker images | grep -E "stafli/stafli.memcached.cache.*$(DISTRO)" | sort -n;
         endif
 
 
@@ -256,7 +257,7 @@ img-rm:
 		docker rmi stafli/stafli.memcached.cache:centos6_memcached14;
         else
 		@echo Removing images for $(DISTRO)...
-		docker rmi solict/high-performance-php-stack:$(DISTRO)_memcached14;
+		docker rmi stafli/stafli.memcached.cache:$(DISTRO)_memcached14;
         endif
 
 
