@@ -1,6 +1,7 @@
 # Stafli Memcached Cache System
 Stafli Memcached Cache System builds based on [Debian](https://www.debian.org/) and [CentOS](https://www.centos.org/), and developed as scripts for [Docker](https://www.docker.com/).  
-Continues on [Stafli Base System](https://github.com/stafli-org/stafli.base.system) builds.
+Continues on [Stafli Base System](https://github.com/stafli-org/stafli.base.system) builds.  
+This project is part of the [Stafli Application Stack](https://github.com/stafli-org/).
 
 Requires [Docker Compose](https://docs.docker.com/compose/) 1.6.x or higher due to the [version 2](https://docs.docker.com/compose/compose-file/#versioning) format of the docker-compose.yml files.
 
@@ -22,7 +23,7 @@ The services use custom images as a starting point:
 
 ## Services
 These are the services described by the dockerfile and docker-compose files:
-- Memcached 1.4.x, adds Memcached on top of upstream Base service
+- Memcached 1.4.x, built on Stafli Base System and additional Memcached packages
 
 ## Images
 These are the [resulting images](https://hub.docker.com/r/stafli/stafli.memcached.cache/tags/) upon building:
