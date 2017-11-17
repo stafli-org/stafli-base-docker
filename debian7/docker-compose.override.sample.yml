@@ -35,6 +35,5 @@ services:
         app_memcached_limit_concurent: "256"
         app_memcached_limit_memory: "128"
     ports:
-      - "10022"
       - "11211"
 
