@@ -97,26 +97,13 @@ RUN printf "Updading Supervisor configuration...\n"; \
     printf "\n# Applying configuration for ${file}...\n"; \
     printf "# Memcached\n\
 [program:memcached]\n\
-command=/bin/bash -c \"opts=\$(grep -o '^[^#]*' /etc/memcached.conf) && exec \$(which memcached) \$opts 2>&1 | logger -i -p local1.info -t memcached\"\n\
+command=/bin/bash -c \"opts=\$(grep -o '^[^#]*' /etc/memcached.conf) && exec \$(which memcached) \$opts > /var/log/memcached.log 2>&1\"\n\
 autostart=true\n\
 autorestart=false\n\
 \n" >> ${file}; \
     printf "Done patching ${file}...\n"; \
     \
     printf "Finished updading Supervisor configuration...\n";
-
-# Rsyslog
-RUN printf "Updading Rsyslog configuration...\n"; \
-    \
-    # /etc/rsyslog.d/memcached.conf
-    file="/etc/rsyslog.d/memcached.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    printf "# Memcached\n\
-local1.debug  /var/log/memcached.log\n\
-\n" > ${file}; \
-    printf "Done patching ${file}...\n"; \
-    \
-    printf "Finished updading Rsyslog configuration...\n";
 
 # Logrotate
 RUN printf "Updading Logrotate configuration...\n"; \
