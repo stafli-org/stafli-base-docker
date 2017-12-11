@@ -1,6 +1,6 @@
 # Stafli Memcached Cache System
 Stafli Memcached Cache System builds based on [Debian](https://www.debian.org) and [CentOS](https://www.centos.org), and developed as scripts for [Docker](https://www.docker.com).  
-Continues on [Stafli Base System](https://github.com/stafli-org/stafli.base.system) builds.  
+Continues on [Stafli Base System](https://github.com/stafli-org/stafli.system.base) builds.  
 This project is part of the [Stafli Application Stack](https://github.com/stafli-org).
 
 Requires [Docker Compose](https://docs.docker.com/compose) 1.6.x or higher due to the [version 2](https://docs.docker.com/compose/compose-file/#versioning) format of the docker-compose.yml files.
@@ -10,7 +10,7 @@ An optional [Makefile](../../tree/master/Makefile) is provided to help with load
 
 Scripts are also provided for each distribution to help test and deploy the installation procedures in non-Docker environments.
 
-The images are automatically built at a [repository](https://hub.docker.com/r/stafli/stafli.memcached.cache) in the Docker Hub registry.
+The images are automatically built at a [repository](https://hub.docker.com/r/stafli/stafli.cache.memcached) in the Docker Hub registry.
 
 ## Distributions
 The services use custom images as a starting point for the following distributions:
@@ -23,23 +23,23 @@ The services use custom images as a starting point for the following distributio
 
 ## Services
 These are the services described by the dockerfile and docker-compose files:
-- Memcached 1.4.x, built on [Stafli Base System](https://github.com/stafli-org/stafli.base.system) and additional [Memcached](https://www.memcached.org) packages
+- Memcached 1.4.x, built on [Stafli Base System](https://github.com/stafli-org/stafli.system.base) and additional [Memcached](https://www.memcached.org) packages
 
 ## Images
-These are the [resulting images](https://hub.docker.com/r/stafli/stafli.memcached.cache/tags) upon building:
+These are the [resulting images](https://hub.docker.com/r/stafli/stafli.cache.memcached/tags) upon building:
 - Memcached 1.4.x:
-  - stafli/stafli.memcached.cache:debian8_memcached14
-  - stafli/stafli.memcached.cache:debian7_memcached14
-  - stafli/stafli.memcached.cache:centos7_memcached14
-  - stafli/stafli.memcached.cache:centos6_memcached14
+  - stafli/stafli.cache.memcached:memcached14_debian8
+  - stafli/stafli.cache.memcached:memcached14_debian7
+  - stafli/stafli.cache.memcached:memcached14_centos7
+  - stafli/stafli.cache.memcached:memcached14_centos6
 
 ## Containers
 These containers can be created from the images:
 - Memcached 1.4.x:
-  - debian8_memcached14_xxx
-  - debian7_memcached14_xxx
-  - centos7_memcached14_xxx
-  - centos6_memcached14_xxx
+  - stafli_cache_memcached14_debian8_xxx
+  - stafli_cache_memcached14_debian7_xxx
+  - stafli_cache_memcached14_centos7_xxx
+  - stafli_cache_memcached14_centos6_xxx
 
 ## Usage
 
@@ -56,19 +56,19 @@ Where <image_url> is the full image url (lookup the image list above).
 
 Example:
 ```
-docker pull stafli/stafli.memcached.cache:debian8_memcached14
+docker pull stafli/stafli.cache.memcached:memcached14_debian8
 
-docker run -ti stafli/stafli.memcached.cache:debian8_memcached14 /bin/bash
+docker run -ti stafli/stafli.cache.memcached:memcached14_debian8 /bin/bash
 ```
 
 ### From GitHub repository (automated)
 
 Note: this method allows using docker-compose and the Makefile.
 
-1. Download the repository [zip file](https://github.com/stafli-org/stafli.memcached.cache/archive/master.zip) and unpack it or clone the repository using:  
-`git clone https://github.com/stafli-org/stafli.memcached.cache.git`
+1. Download the repository [zip file](https://github.com/stafli-org/stafli.cache.memcached/archive/master.zip) and unpack it or clone the repository using:  
+`git clone https://github.com/stafli-org/stafli.cache.memcached.git`
 2. Navigate to the project directory through the terminal:  
-`cd stafli.memcached.cache`
+`cd stafli.cache.memcached`
 3. Type in the desired operation through the terminal:  
 `make <operation> DISTRO=<distro>`
 
@@ -76,8 +76,8 @@ Where <distro> is the distribution/directory and <operation> is the desired dock
 
 Example:
 ```
-git clone https://github.com/stafli-org/stafli.memcached.cache.git;
-cd stafli.memcached.cache;
+git clone https://github.com/stafli-org/stafli.cache.memcached.git;
+cd stafli.cache.memcached;
 
 # Example #1: quick start, with build
 make up DISTRO=debian8;
