@@ -27,7 +27,7 @@ version: '2'
 #
 services:
 
-  memcached14:
+  debian7_memcached14_cache:
     build:
       args:
         app_memcached_listen_port: "11211"

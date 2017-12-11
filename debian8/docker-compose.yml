@@ -27,7 +27,7 @@ version: '2'
 #
 services:
 
-  memcached14:
+  debian8_memcached14_cache:
     labels:
       - "org.label-schema.schema-version=1.0"
       - "org.label-schema.name=$PROJECT_NAME"
@@ -54,7 +54,7 @@ services:
       - "org.label-schema.os-architecture=$BUILD_ARCH"
       - "org.label-schema.version=$BUILD_VERSION"
       - "org.label-schema.build-date=$BUILD_DATE"
-    image: "stafli/stafli.memcached.cache:debian8_memcached14"
+    image: "${IMAGE_URL_PREFIX}:debian8_memcached14"
     build:
       context: "./dockerfiles"
       dockerfile: "memcached14.dockerfile"
@@ -73,7 +73,7 @@ services:
     logging:
       driver: "json-file"
     volumes:
-      - memcached14_data:/var/lib/memcached
+      - debian8_memcached14_cache_data:/var/lib/memcached
     ports:
       - "11211"
     working_dir: "/tmp"
@@ -83,6 +83,6 @@ services:
 # Volumes
 #
 volumes:
-  memcached14_data:
+  debian8_memcached14_cache_data:
     driver: "local"
 
