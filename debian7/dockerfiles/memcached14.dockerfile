@@ -19,7 +19,36 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+#
+# Build
+#
+
+# Base image to use
 FROM stafli/stafli.system.base:base10_debian7
+
+# Labels to apply
+LABEL description="Stafli Memcached Cache System (stafli/stafli.cache.memcached), Based on Stafli Base System (stafli/stafli.system.base)" \
+      maintainer="lp@algarvio.org" \
+      org.label-schema.schema-version="1.0.0-rc.1" \
+      org.label-schema.name="Stafli Memcached Cache System (stafli/stafli.cache.memcached)" \
+      org.label-schema.description="Based on Stafli Base System (stafli/stafli.system.base)" \
+      org.label-schema.keywords="stafli, memcached, cache, debian, centos" \
+      org.label-schema.url="https://stafli.org/" \
+      org.label-schema.license="GPLv3" \
+      org.label-schema.vendor-name="Stafli" \
+      org.label-schema.vendor-email="info@stafli.org" \
+      org.label-schema.vendor-website="https://www.stafli.org" \
+      org.label-schema.authors.lpalgarvio.name="Luis Pedro Algarvio" \
+      org.label-schema.authors.lpalgarvio.email="lp@algarvio.org" \
+      org.label-schema.authors.lpalgarvio.homepage="https://lp.algarvio.org" \
+      org.label-schema.authors.lpalgarvio.role="Maintainer" \
+      org.label-schema.registry-url="https://hub.docker.com/r/stafli/stafli.cache.memcached" \
+      org.label-schema.vcs-url="https://github.com/stafli-org/stafli.cache.memcached" \
+      org.label-schema.vcs-branch="master" \
+      org.label-schema.os-id="debian" \
+      org.label-schema.os-version-id="7" \
+      org.label-schema.os-architecture="amd64" \
+      org.label-schema.version="1.0"
 
 #
 # Arguments
@@ -38,18 +67,31 @@ ARG app_memcached_limit_concurent="256"
 ARG app_memcached_limit_memory="128"
 
 #
+# Environment
+#
+
+# Working directory to use when executing build and run instructions
+# Defaults to /.
+#WORKDIR /
+
+# User and group to use when executing build and run instructions
+# Defaults to root.
+#USER root:root
+
+#
 # Packages
 #
 
-# Install the Memcached packages
+# Install memcached packages
 #  - memcached: for memcached, the Memcached distributed memory object caching system server
 RUN printf "Installing repositories and packages...\n" && \
     \
-    printf "Install the Memcached packages...\n" && \
+    printf "Install the memcached packages...\n" && \
     apt-get update && apt-get install -qy \
       memcached && \
-    printf "Cleanup the Package Manager...\n" && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*; \
+    \
+    printf "Cleanup the package manager...\n" && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* && \
     \
     printf "Finished installing repositories and packages...\n";
 
@@ -58,10 +100,11 @@ RUN printf "Installing repositories and packages...\n" && \
 #
 
 # Add users and groups
-RUN printf "Adding users and groups...\n"; \
+RUN printf "Adding users and groups...\n" && \
     \
-    printf "Add memcached user and group...\n"; \
-    id -g ${app_memcached_user} || \
+    printf "Add memcached user and group...\n" && \
+    id -g ${app_memcached_user} \
+    || \
     groupadd \
       --system ${app_memcached_group} && \
     id -u ${app_memcached_user} && \
@@ -75,38 +118,38 @@ RUN printf "Adding users and groups...\n"; \
       --system --gid ${app_memcached_group} \
       --no-create-home --home-dir ${app_memcached_home} \
       --shell /usr/sbin/nologin \
-      ${app_memcached_user}; \
+      ${app_memcached_user} && \
     \
     printf "Finished adding users and groups...\n";
 
 # Supervisor
-RUN printf "Updading Supervisor configuration...\n"; \
+RUN printf "Updading Supervisor configuration...\n" && \
     \
     # /etc/supervisor/conf.d/init.conf \
-    file="/etc/supervisor/conf.d/init.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    perl -0p -i -e "s>supervisorctl start rclocal;>supervisorctl start rclocal; supervisorctl start memcached;>" ${file}; \
-    printf "Done patching ${file}...\n"; \
+    file="/etc/supervisor/conf.d/init.conf" && \
+    printf "\n# Applying configuration for ${file}...\n" && \
+    perl -0p -i -e "s>supervisorctl start rclocal;>supervisorctl start rclocal; supervisorctl start memcached;>" ${file} && \
+    printf "Done patching ${file}...\n" && \
     \
     # /etc/supervisor/conf.d/memcached.conf \
-    file="/etc/supervisor/conf.d/memcached.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
+    file="/etc/supervisor/conf.d/memcached.conf" && \
+    printf "\n# Applying configuration for ${file}...\n" && \
     printf "# Memcached\n\
 [program:memcached]\n\
 command=/bin/bash -c \"opts=\$(grep -o '^[^#]*' /etc/memcached.conf) && exec \$(which memcached) \$opts > /var/log/memcached.log 2>&1\"\n\
 autostart=false\n\
 autorestart=true\n\
-\n" > ${file}; \
-    printf "Done patching ${file}...\n"; \
+\n" > ${file} && \
+    printf "Done patching ${file}...\n" && \
     \
     printf "Finished updading Supervisor configuration...\n";
 
 # Logrotate
-RUN printf "Updading Logrotate configuration...\n"; \
+RUN printf "Updading Logrotate configuration...\n" && \
     \
     # /etc/logrotate.d/memcached.conf \
-    file="/etc/logrotate.d/memcached.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
+    file="/etc/logrotate.d/memcached.conf" && \
+    printf "\n# Applying configuration for ${file}...\n" && \
     printf "# Memcached\n\
 /var/log/memcached.log {\n\
     weekly\n\
@@ -120,51 +163,63 @@ RUN printf "Updading Logrotate configuration...\n"; \
         supervisorctl restart memcached\n\
     endscript\n\
 }\n\
-\n" > ${file}; \
-    printf "Done patching ${file}...\n"; \
+\n" > ${file} && \
+    printf "Done patching ${file}...\n" && \
     \
     printf "Finished updading Logrotate configuration...\n";
 
 # Memcached
-RUN printf "Updading Memcached configuration...\n"; \
+RUN printf "Updading Memcached configuration...\n" && \
     \
     # /etc/default/memcached \
-    file="/etc/default/memcached"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
+    file="/etc/default/memcached" && \
+    printf "\n# Applying configuration for ${file}...\n" && \
     # enable memcached \
-    perl -0p -i -e "s>ENABLE_MEMCACHED=.*>ENABLE_MEMCACHED=yes>" ${file}; \
-    printf "Done patching ${file}...\n"; \
+    perl -0p -i -e "s>ENABLE_MEMCACHED=.*>ENABLE_MEMCACHED=yes>" ${file} && \
+    printf "Done patching ${file}...\n" && \
     \
     # /etc/memcached.conf \
-    file="/etc/memcached.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
+    file="/etc/memcached.conf" && \
+    printf "\n# Applying configuration for ${file}...\n" && \
     # disable daemon/run in foreground \
-    perl -0p -i -e "s># information.\n.*-d\n># information.\n#-d\n>" ${file}; \
+    perl -0p -i -e "s># information.\n.*-d\n># information.\n#-d\n>" ${file} && \
     # run as user \
-    perl -0p -i -e "s># -u command is present in this config file\n.*-u .*\n># -u command is present in this config file\n-u ${app_memcached_user}\n>" ${file}; \
+    perl -0p -i -e "s># -u command is present in this config file\n.*-u .*\n># -u command is present in this config file\n-u ${app_memcached_user}\n>" ${file} && \
     # change log level \
-    if [ "$app_memcached_loglevel" = "notice" ]; then app_memcached_loglevel_ovr="-v"; elif [ "$app_memcached_loglevel" = "verbose" ]; then app_memcached_loglevel_ovr="-vv"; else app_memcached_loglevel_ovr=""; fi; \
-    perl -0p -i -e "s># Be verbose\n.*-v\n># Be verbose\n${app_memcached_loglevel_ovr}\n>" ${file}; \
+    if [ "$app_memcached_loglevel" = "notice" ]; then app_memcached_loglevel_ovr="-v"; elif [ "$app_memcached_loglevel" = "verbose" ]; then app_memcached_loglevel_ovr="-vv"; else app_memcached_loglevel_ovr=""; fi && \
+    perl -0p -i -e "s># Be verbose\n.*-v\n># Be verbose\n${app_memcached_loglevel_ovr}\n>" ${file} && \
     # change interface \
-    perl -0p -i -e "s># it's listening on a firewalled interface.\n.*-l .*\n># it's listening on a firewalled interface.\n-l ${app_memcached_listen_addr}\n>" ${file}; \
+    perl -0p -i -e "s># it's listening on a firewalled interface.\n.*-l .*\n># it's listening on a firewalled interface.\n-l ${app_memcached_listen_addr}\n>" ${file} && \
     # change port \
-    perl -0p -i -e "s># Default connection port is 11211\n.*-p .*\n># Default connection port is 11211\n-p ${app_memcached_listen_port}\n>" ${file}; \
+    perl -0p -i -e "s># Default connection port is 11211\n.*-p .*\n># Default connection port is 11211\n-p ${app_memcached_listen_port}\n>" ${file} && \
     # change backlog queue limit \
-    printf "\n# Set the backlog queue limit (default: 1024)\n-b ${app_memcached_limit_backlog}\n" >> ${file}; \
+    printf "\n# Set the backlog queue limit (default: 1024)\n-b ${app_memcached_limit_backlog}\n" >> ${file} && \
     # change max concurrent connections \
-    perl -0p -i -e "s># Limit the number of simultaneous incoming connections. The daemon default is 1024\n.*-c .*\n># Limit the number of simultaneous incoming connections. The daemon default is 1024\n-c ${app_memcached_limit_concurent}\n>" ${file}; \
+    perl -0p -i -e "s># Limit the number of simultaneous incoming connections. The daemon default is 1024\n.*-c .*\n># Limit the number of simultaneous incoming connections. The daemon default is 1024\n-c ${app_memcached_limit_concurent}\n>" ${file} && \
     # change max memory \
-    perl -0p -i -e "s># memory\n.*-m .*\n># memory\n-m ${app_memcached_limit_memory}\n>" ${file}; \
+    perl -0p -i -e "s># memory\n.*-m .*\n># memory\n-m ${app_memcached_limit_memory}\n>" ${file} && \
     # change protocol to auto \
-    printf "\n# Binding protocol - one of ascii, binary, or auto (default)\n-B ${app_memcached_listen_proto}\n" >> ${file}; \
+    printf "\n# Binding protocol - one of ascii, binary, or auto (default)\n-B ${app_memcached_listen_proto}\n" >> ${file} && \
     # change SASL authentication \
-    if [ "$app_memcached_auth_sasl" = "yes" ]; then app_memcached_auth_sasl="-S"; else app_memcached_auth_sasl="#-S"; fi; \
-    printf "\n# Turn on SASL authentication\n${app_memcached_auth_sasl}\n" >> ${file}; \
-    printf "Done patching ${file}...\n"; \
+    if [ "$app_memcached_auth_sasl" = "yes" ]; then app_memcached_auth_sasl="-S"; else app_memcached_auth_sasl="#-S"; fi && \
+    printf "\n# Turn on SASL authentication\n${app_memcached_auth_sasl}\n" >> ${file} && \
+    printf "Done patching ${file}...\n" && \
     \
-    printf "\n# Testing configuration...\n"; \
-    echo "Testing $(which memcached):"; $(which memcached) -i | grep "memcached"; \
-    printf "Done testing configuration...\n"; \
+    printf "\n# Testing configuration...\n" && \
+    echo "Testing $(which memcached):"; $(which memcached) -i | grep "memcached" && \
+    printf "Done testing configuration...\n" && \
     \
     printf "Finished updading Memcached configuration...\n";
+
+#
+# Run
+#
+
+# Command to execute
+# Defaults to /bin/bash.
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf", "--nodaemon"]
+
+# Ports to expose
+# Defaults to 11211
+EXPOSE ${app_memcached_listen_port}
 
