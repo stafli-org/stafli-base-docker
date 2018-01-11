@@ -149,30 +149,6 @@ autorestart=false\n\
     \
     printf "Finished updading Supervisor configuration...\n";
 
-# Logrotate
-RUN printf "Updading Logrotate configuration...\n" && \
-    \
-    # /etc/logrotate.d/memcached.conf \
-    file="/etc/logrotate.d/memcached.conf" && \
-    printf "\n# Applying configuration for ${file}...\n" && \
-    printf "# Memcached\n\
-/var/log/memcached.log {\n\
-    weekly\n\
-    rotate 4\n\
-    dateext\n\
-    missingok\n\
-    create 0640 ${app_memcached_user} ${app_memcached_group}\n\
-    compress\n\
-    delaycompress\n\
-    postrotate\n\
-        supervisorctl restart memcached\n\
-    endscript\n\
-}\n\
-\n" > ${file} && \
-    printf "Done patching ${file}...\n" && \
-    \
-    printf "Finished updading Logrotate configuration...\n";
-
 # Memcached
 RUN printf "Updading Memcached configuration...\n" && \
     \
