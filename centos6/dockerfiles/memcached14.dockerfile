@@ -24,7 +24,7 @@
 #
 
 # Base image to use
-FROM stafli/stafli.init.supervisor:supervisor21_centos6
+FROM stafli/stafli.init.supervisor:supervisor31_centos6
 
 # Labels to apply
 LABEL description="Stafli Memcached Cache System (stafli/stafli.cache.memcached), Based on Stafli Supervisor Init (stafli/stafli.init.supervisor)" \
@@ -134,23 +134,27 @@ RUN printf "Adding users and groups...\n" && \
 # Supervisor
 RUN printf "Updading Supervisor configuration...\n" && \
     \
-    # init is not working at this point \
+    # /etc/supervisord.d/init.conf \
+    file="/etc/supervisord.d/init.conf" && \
+    printf "\n# Applying configuration for ${file}...\n" && \
+    perl -0p -i -e "s>supervisorctl start rclocal;>supervisorctl start rclocal; supervisorctl start memcached;>" ${file} && \
+    printf "Done patching ${file}...\n" && \
     \
-    # /etc/supervisord.conf \
-    file="/etc/supervisord.conf" && \
+    # /etc/supervisord.d/memcached.conf \
+    file="/etc/supervisord.d/memcached.conf" && \
     printf "\n# Applying configuration for ${file}...\n" && \
     printf "# Memcached\n\
 [program:memcached]\n\
 command=/bin/bash -c \"opts=\$(grep -o '^[^#]*' /etc/memcached.conf) && exec \$(which memcached) \$opts\"\n\
-autostart=true\n\
-autorestart=false\n\
+autostart=false\n\
+autorestart=true\n\
 stdout_logfile=/dev/stdout\n\
 stdout_logfile_maxbytes=0\n\
 stderr_logfile=/dev/stderr\n\
 stderr_logfile_maxbytes=0\n\
 stdout_events_enabled=true\n\
 stderr_events_enabled=true\n\
-\n" >> ${file} && \
+\n" > ${file} && \
     printf "Done patching ${file}...\n" && \
     \
     printf "Finished updading Supervisor configuration...\n";
