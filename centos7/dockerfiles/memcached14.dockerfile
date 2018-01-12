@@ -24,14 +24,14 @@
 #
 
 # Base image to use
-FROM stafli/stafli.system.base:base10_centos7
+FROM stafli/stafli.init.supervisor:supervisor31_centos7
 
 # Labels to apply
-LABEL description="Stafli Memcached Cache System (stafli/stafli.cache.memcached), Based on Stafli Base System (stafli/stafli.system.base)" \
+LABEL description="Stafli Memcached Cache System (stafli/stafli.cache.memcached), Based on Stafli Supervisor Init (stafli/stafli.init.supervisor)" \
       maintainer="lp@algarvio.org" \
       org.label-schema.schema-version="1.0.0-rc.1" \
       org.label-schema.name="Stafli Memcached Cache System (stafli/stafli.cache.memcached)" \
-      org.label-schema.description="Based on Stafli Base System (stafli/stafli.system.base)" \
+      org.label-schema.description="Based on Stafli Supervisor Init (stafli/stafli.init.supervisor)" \
       org.label-schema.keywords="stafli, memcached, cache, debian, centos" \
       org.label-schema.url="https://stafli.org/" \
       org.label-schema.license="GPLv3" \
@@ -145,9 +145,15 @@ RUN printf "Updading Supervisor configuration...\n" && \
     printf "\n# Applying configuration for ${file}...\n" && \
     printf "# Memcached\n\
 [program:memcached]\n\
-command=/bin/bash -c \"opts=\$(grep -o '^[^#]*' /etc/memcached.conf) && exec \$(which memcached) \$opts > /var/log/memcached.log 2>&1\"\n\
+command=/bin/bash -c \"opts=\$(grep -o '^[^#]*' /etc/memcached.conf) && exec \$(which memcached) \$opts\"\n\
 autostart=false\n\
 autorestart=true\n\
+stdout_logfile=/dev/stdout\n\
+stdout_logfile_maxbytes=0\n\
+stderr_logfile=/dev/stderr\n\
+stderr_logfile_maxbytes=0\n\
+stdout_events_enabled=true\n\
+stderr_events_enabled=true\n\
 \n" > ${file} && \
     printf "Done patching ${file}...\n" && \
     \
