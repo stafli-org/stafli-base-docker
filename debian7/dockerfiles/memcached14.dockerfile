@@ -82,16 +82,22 @@ ARG app_memcached_limit_memory="128"
 # Packages
 #
 
-# Install memcached packages
-#  - memcached: for memcached, the Memcached distributed memory object caching system server
+# Refresh the package manager
+# Install the selected packages
+#   Install the memcached packages
+#    - memcached: for memcached, the Memcached distributed memory object caching system server
+# Cleanup the package manager
 RUN printf "Installing repositories and packages...\n" && \
     \
+    printf "Refresh the package manager...\n" && \
+    apt-get update && \
+    \
     printf "Install the memcached packages...\n" && \
-    apt-get update && apt-get install -qy \
+    apt-get install -qy \
       memcached && \
     \
     printf "Cleanup the package manager...\n" && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* && rm -Rf /var/cache/apt/* && \
     \
     printf "Finished installing repositories and packages...\n";
 

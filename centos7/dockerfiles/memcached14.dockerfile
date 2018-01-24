@@ -82,25 +82,29 @@ ARG app_memcached_limit_memory="128"
 # Packages
 #
 
+# Refresh the package manager
 # Add foreign repositories and GPG keys
 #  - remi-release: for Les RPM de remi pour Enterprise Linux 7 (Remi)
-# Install memcached packages
-#  - memcached: for memcached, the Memcached distributed memory object caching system server
+# Install the selected packages
+#   Install the memcached packages
+#    - memcached: for memcached, the Memcached distributed memory object caching system server
+# Cleanup the package manager
 RUN printf "Installing repositories and packages...\n" && \
     \
+    printf "Refresh the package manager...\n" && \
+    rpm --rebuilddb && yum makecache && \
+    \
     printf "Install the foreign repositories and refresh the GPG keys...\n" && \
-    rpm --rebuilddb && \
-    yum makecache && yum install -y \
+    yum install -y \
       http://rpms.remirepo.net/enterprise/remi-release-7.rpm && \
     yum-config-manager --enable remi-safe remi && \
-    gpg --refresh-keys && \
     \
     printf "Install the memcached packages...\n" && \
-    yum makecache && yum install -y \
+    yum install -y \
       memcached && \
     \
     printf "Cleanup the package manager...\n" && \
-    yum clean all && rm -Rf /var/lib/yum/* && \
+    yum clean all && rm -Rf /var/lib/yum/* && rm -Rf /var/cache/yum/* && \
     \
     printf "Finished installing repositories and packages...\n";
 
