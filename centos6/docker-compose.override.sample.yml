@@ -30,6 +30,7 @@ services:
   cache_memcached14_centos6:
     build:
       args:
+        app_memcached_loglevel: "verbose"
         app_memcached_listen_port: "11211"
         app_memcached_limit_backlog: "256"
         app_memcached_limit_concurent: "256"

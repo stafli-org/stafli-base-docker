@@ -205,6 +205,8 @@ RUN printf "Updading Memcached configuration...\n" && \
     # change log level \
     if [ "$app_memcached_loglevel" = "notice" ]; then app_memcached_loglevel_ovr="-v"; elif [ "$app_memcached_loglevel" = "verbose" ]; then app_memcached_loglevel_ovr="-vv"; else app_memcached_loglevel_ovr=""; fi && \
     printf "\n# Be verbose\n${app_memcached_loglevel_ovr}\n" >> ${file} && \
+    # change log file \
+    printf "\n# Log memcached output\n#logfile /proc/self/fd/2\n" >> ${file} && \
     # change interface \
     printf "\n# Specify which IP address to listen on.\n-l ${app_memcached_listen_addr}\n" >> ${file} && \
     # change port \

@@ -176,6 +176,8 @@ RUN printf "Updading Memcached configuration...\n" && \
     # change log level \
     if [ "$app_memcached_loglevel" = "notice" ]; then app_memcached_loglevel_ovr="-v"; elif [ "$app_memcached_loglevel" = "verbose" ]; then app_memcached_loglevel_ovr="-vv"; else app_memcached_loglevel_ovr=""; fi && \
     perl -0p -i -e "s># Be verbose\n.*-v\n># Be verbose\n${app_memcached_loglevel_ovr}\n>" ${file} && \
+    # change log file \
+    perl -0p -i -e "s>logfile .*>#logfile /proc/self/fd/2>" ${file} && \
     # change interface \
     perl -0p -i -e "s># it's listening on a firewalled interface.\n.*-l .*\n># it's listening on a firewalled interface.\n-l ${app_memcached_listen_addr}\n>" ${file} && \
     # change port \
